@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Mapping
 
 from hvac import Client
-from hvac.exceptions import InvalidPath
+from hvac.exceptions import InvalidPath, Forbidden
 
 from vault.exceptions import VaultClientImproperlyConfiguredError
 from vault import config
@@ -19,20 +19,9 @@ def get_client(
     secret_id: str | None = None,
 ) -> Client | None:
     if auth_method == "token":
-        if not token:
-            raise NotImplementedError(
-                "Missing variable VAULT_TOKEN. "
-                "Cannot authenticate with vault using token."
-            )
         return Client(url=host, token=token)
 
     if auth_method == "approle":
-        if not role_id or not secret_id:
-            raise NotImplementedError(
-                "Missing variables VAULT_ROLE_ID and/or VAULT_SECRET_ID. "
-                "Cannot authenticate with vault using approle."
-            )
-
         client = Client(url=host)
         client.auth.approle.login(
             role_id=role_id,
@@ -41,7 +30,7 @@ def get_client(
         return client
 
 
-def _vault_config_is_valid(
+def _validate_vault_config(
     auth_method: str,
     token: str | None = None,
     role_id: str | None = None,
@@ -67,12 +56,8 @@ def _vault_config_is_valid(
 
 @lru_cache
 def _fetch_variables() -> Mapping[str, str]:
-    if not config.VAULT_ENABLED:
-        logger.info("Vault credentials not fetched. VAULT_ENABLED is False.")
-        return dict()
-
     try:
-        _vault_config_is_valid(
+        _validate_vault_config(
             auth_method=config.VAULT_AUTH_METHOD,
             token=config.VAULT_TOKEN,
             role_id=config.VAULT_ROLE_ID,
@@ -97,7 +82,7 @@ def _fetch_variables() -> Mapping[str, str]:
     logger.debug(f"Connected to vault with auth method {config.VAULT_AUTH_METHOD}.")
     try:
         response = client.secrets.kv.v2.read_secret(
-            mount_point=config.VAULT_MOUNT_POINT,
+            mount_point=config.VAULT_ENGINE_NAME,
             path=config.VAULT_PATH,
         )
     except InvalidPath:
@@ -105,10 +90,19 @@ def _fetch_variables() -> Mapping[str, str]:
             f"Your path ({config.VAULT_PATH}) has not been created yet "
             f"or there are no credentials in it."
         )
+    except Forbidden:
+        raise Exception(
+            f"Your {config.VAULT_AUTH_METHOD} does not have access to the path "
+            f"'{config.VAULT_PATH}'."
+        )
 
     secrets = response["data"]["data"]
     logger.info(f"Fetched {len(secrets.keys())} secret(s) from vault.")
     return secrets
 
 
-_variables = _fetch_variables()
+_variables = dict()
+if config.VAULT_ENABLED:
+    _variables = _fetch_variables()
+else:
+    logger.info("Vault credentials not fetched. VAULT_ENABLED is False.")

@@ -1,4 +1,4 @@
-# py-sec-vault
+# PySecVault
 Hashicorp Vault implementation in python software
 
 
@@ -29,7 +29,7 @@ After this you should set environment variables to connect to the vault instance
 export VAULT_HOST=http://localhost:8200/
 export VAULT_ENABLED=True|False
 export VAULT_AUTH_METHOD=approle|token
-export VAULT_MOUNT_POINT=<my_engine_name>
+export VAULT_ENGINE_NAME=<my_engine_name>
 export VAULT_ROLE_ID=<my_vault_id>
 export VAULT_SECRET_ID=<my_vauld_secret>
 export VAULT_PATH=<my_vault_path>
@@ -38,7 +38,17 @@ export VAULT_PATH=<my_vault_path>
 ## Usage
 
 ```python
-from vault import from_env_or_vault
+from vault import from_env_or_vault, from_vault
 
+# Retrieving a secret from the vault or environment variable or using a default value
 from_env_or_vault("DB_PASSWORD", default="admin")
+
+# Retrieving a secret from the vault (and raising an exception if not found)
+from_vault("API_TOKEN")
 ```
+
+## Next steps
+- [ ] Make sure the vault is not initialized every time, but only when needed
+- [ ] Add support for other auth methods
+- [ ] Phase out the use of hvac and use requests instead
+- [ ] Implementation of from_vault_or_env

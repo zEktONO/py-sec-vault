@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "py-sec-vault"
-version = "0.0.1.5"
-description = "Hashicorp Vault implementation in python software"
+version = "0.1.0"
+description = "Vault implementation in python software (Hashicorp)"
 authors = ["CISolutions B.V. <info@cisolutions.nl>"]
 license = "MIT"
 readme = "README.md"
