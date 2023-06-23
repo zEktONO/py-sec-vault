@@ -1,6 +1,6 @@
 import logging
 from functools import lru_cache
-from typing import Mapping
+from typing import Mapping, Optional
 
 from hvac import Client
 from hvac.exceptions import InvalidPath, Forbidden
@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 def get_client(
     auth_method: str,
     host: str,
-    token: str | None = None,
-    role_id: str | None = None,
-    secret_id: str | None = None,
-) -> Client | None:
+    token: Optional[str] = None,
+    role_id: Optional[str] = None,
+    secret_id: Optional[str] = None,
+) -> Optional[Client]:
     if auth_method == "token":
         return Client(url=host, token=token)
 
@@ -32,9 +32,9 @@ def get_client(
 
 def _validate_vault_config(
     auth_method: str,
-    token: str | None = None,
-    role_id: str | None = None,
-    secret_id: str | None = None,
+    token: Optional[str] = None,
+    role_id: Optional[str] = None,
+    secret_id: Optional[str] = None,
 ) -> bool:
     if auth_method == "token":
         if not token:

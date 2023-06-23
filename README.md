@@ -49,6 +49,7 @@ from_vault("API_TOKEN")
 
 ## Next steps
 - [ ] Make sure the vault is not initialized every time, but only when needed
+- [ ] On init load multiple paths/engines
 - [ ] Add support for other auth methods
 - [ ] Phase out the use of hvac and use requests instead
 - [ ] Implementation of from_vault_or_env
