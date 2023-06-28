@@ -27,7 +27,6 @@ After this you should set environment variables to connect to the vault instance
 
 ```
 export VAULT_HOST=http://localhost:8200/
-export VAULT_ENABLED=True|False
 export VAULT_AUTH_METHOD=approle|token
 export VAULT_ENGINE_NAME=<my_engine_name>
 export VAULT_ROLE_ID=<my_vault_id>
@@ -38,7 +37,23 @@ export VAULT_PATH=<my_vault_path>
 ## Usage
 
 ```python
+from vault import Vault
+
+vault = Vault()
+
+# Retrieving a secret from the vault, or None if not found
+my_optional_secret = vault.get("MY_SECRET")
+
+# Retrieving a secret from the vault (and raising an exception if not found)
+my_secret = vault["MY_SECRET"]
+```
+
+## Usage with environment variables
+```python
 from vault import from_env_or_vault, from_vault
+
+# NB: These functions will instantiate a Vault object and retrieve the secret from the vault
+# resulting in a performance penalty if used in a loop; in that case, instantiate a Vault object.
 
 # Retrieving a secret from the vault or environment variable or using a default value
 from_env_or_vault("DB_PASSWORD", default="admin")

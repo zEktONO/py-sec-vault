@@ -2,32 +2,13 @@ import logging
 from functools import lru_cache
 from typing import Mapping, Optional
 
-from hvac import Client
 from hvac.exceptions import InvalidPath, Forbidden
 
-from vault.exceptions import VaultClientImproperlyConfiguredError
 from vault import config
+from vault.client import get_client
+from vault.exceptions import VaultClientImproperlyConfiguredError
 
 logger = logging.getLogger(__name__)
-
-
-def get_client(
-    auth_method: str,
-    host: str,
-    token: Optional[str] = None,
-    role_id: Optional[str] = None,
-    secret_id: Optional[str] = None,
-) -> Optional[Client]:
-    if auth_method == "token":
-        return Client(url=host, token=token)
-
-    if auth_method == "approle":
-        client = Client(url=host)
-        client.auth.approle.login(
-            role_id=role_id,
-            secret_id=secret_id,
-        )
-        return client
 
 
 def _validate_vault_config(
@@ -101,8 +82,17 @@ def _fetch_variables() -> Mapping[str, str]:
     return secrets
 
 
-_variables = dict()
-if config.VAULT_ENABLED:
-    _variables = _fetch_variables()
-else:
-    logger.info("Vault credentials not fetched. VAULT_ENABLED is False.")
+class Vault:
+    _variables: Mapping[str, str] = dict()
+
+    def __init__(self):
+        self._variables = _fetch_variables()
+
+    def __getitem__(self, key: str) -> Optional[str]:
+        return self._variables[key]
+
+    def get(self, key: str, default: str = None) -> Optional[str]:
+        try:
+            return self[key]
+        except KeyError:
+            return default
