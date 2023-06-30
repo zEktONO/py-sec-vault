@@ -1,7 +1,7 @@
 import os
 from typing import Optional
 
-from vault import Vault
+from . import Vault
 
 
 def from_env_or_vault(
