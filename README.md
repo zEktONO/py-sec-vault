@@ -76,7 +76,7 @@ from_vault("API_TOKEN")
 
 To retrieve all secrets from the vault, you can use the following code:
 ```python
-from vault import Vault
+from vault import Vault, from_env_or_vault
 
 # This will connect to the vault based on the environment variables;
 vault = Vault()
@@ -85,13 +85,17 @@ vault = Vault()
 print(vault.keys) 
 
 # Retrieving a secret from the vault, or None if not found
-my_optional_secret = vault.get("MY_SECRET")
+my_secret = vault.get("MY_SECRET")
+
+# Passing an instance of Vault to the from_env_or_vault function,
+# so it doesn't need to connect to the vault again;
+my_variable = from_env_or_vault("MY_VARIABLE", default="admin", vault=vault)
 ```
 
 
 ## Next steps
-- [X] Make sure the vault is not initialized every time, but only when needed
 - [ ] On init load multiple paths/engines
 - [ ] Add support for other auth methods
 - [ ] Phase out the use of hvac and use requests instead
-- [ ] Implementation of from_vault_or_env
+- [X] Make sure the vault is not initialized every time, but only when needed
+- [X] Implementation of from_vault_or_env
