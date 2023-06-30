@@ -100,7 +100,7 @@ class Vault:
             )
 
         variables = response["data"]["data"]
-        logger.info(f"Fetched {len(self._variables.keys())} secret(s) from vault.")
+        logger.info(f"Fetched {len(variables.keys())} secret(s) from vault.")
         return variables
 
     def get(self, key: str, default: str = None) -> Optional[str]:
