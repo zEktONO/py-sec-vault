@@ -1,12 +1,9 @@
 import logging
 from functools import lru_cache
-from typing import Mapping, Optional, Tuple
-
-from hvac import Client
-from hvac.exceptions import InvalidPath, Forbidden
+from typing import Mapping, Optional, Tuple, Union
 
 from . import config
-from .client import get_client
+from .client import get_client, TokenClient, AppRoleClient
 from .exceptions import VaultClientImproperlyConfiguredError
 
 logger = logging.getLogger(__name__)
@@ -38,7 +35,7 @@ def _validate_vault_config(
 
 class Vault:
     _variables: Mapping[str, str] = dict()
-    _client: Optional[Client] = None
+    _client: Optional[Union[TokenClient, AppRoleClient]] = None
 
     def __init__(
         self,
@@ -62,11 +59,10 @@ class Vault:
             return
 
         self._client = get_client(
-            auth_method=auth_method,
             host=host,
-            token=token,
             role_id=role_id,
             secret_id=secret_id,
+            token=token,
         )
         if not self._client:
             raise ConnectionError(
@@ -84,22 +80,7 @@ class Vault:
 
     @lru_cache
     def _fetch_variables(self, engine_name: str, vault_path: str) -> Mapping[str, str]:
-        try:
-            response = self._client.secrets.kv.v2.read_secret(
-                mount_point=engine_name,
-                path=vault_path,
-            )
-        except InvalidPath:
-            raise Exception(
-                f"Your path ({vault_path}) has not been created yet "
-                f"or there are no credentials in it."
-            )
-        except Forbidden:
-            raise Exception(
-                f"Your client does not have access to the path '{vault_path}'."
-            )
-
-        variables = response["data"]["data"]
+        variables = self._client.read_secrets(engine_name, vault_path)
         logger.info(f"Fetched {len(variables.keys())} secret(s) from vault.")
         return variables
 

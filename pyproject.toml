@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "py-sec-vault"
-version = "0.1.5"
+version = "0.1.6"
 description = "Vault implementation in python software (Hashicorp)"
 authors = ["CISolutions B.V. <info@cisolutions.nl>"]
 license = "MIT"
@@ -23,7 +23,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9"
-hvac = "^1.1.0"
+requests = "2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]

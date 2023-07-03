@@ -40,6 +40,8 @@ mypy-extensions = ">=0.4.3"
 packaging = ">=22.0"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
+tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
+typing-extensions = {version = ">=3.10.0.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
 colorama = ["colorama (>=0.4.3)"]
@@ -168,21 +170,6 @@ files = [
 ]
 
 [[package]]
-name = "hvac"
-version = "1.1.0"
-description = "HashiCorp Vault API client"
-optional = false
-python-versions = ">=3.6.2,<4.0.0"
-files = [
-    {file = "hvac-1.1.0-py3-none-any.whl", hash = "sha256:12368860f117c7e886acc348bf6a3f58d01c3fad17d4604c24ee9df3ee8a3dee"},
-    {file = "hvac-1.1.0.tar.gz", hash = "sha256:079dca58856dee6646ed5a2f2283809c16d2deedde1e9e9615b2910324a4b969"},
-]
-
-[package.dependencies]
-pyhcl = ">=0.4.4,<0.5.0"
-requests = ">=2.27.1,<3.0.0"
-
-[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -242,16 +229,6 @@ docs = ["furo (>=2023.5.20)", "proselint (>=0.13)", "sphinx (>=7.0.1)", "sphinx-
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.3.1)", "pytest-cov (>=4.1)", "pytest-mock (>=3.10)"]
 
 [[package]]
-name = "pyhcl"
-version = "0.4.4"
-description = "HCL configuration parser for python"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyhcl-0.4.4.tar.gz", hash = "sha256:2d9b9dcdf1023d812bfed561ba72c99104c5b3f52e558d595130a44ce081b003"},
-]
-
-[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -273,6 +250,28 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.7.1"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
+]
+
+[[package]]
 name = "urllib3"
 version = "2.0.3"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -291,5 +290,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11"
-content-hash = "b5cd4473091a097a33c828e715bb594f7dfac84e0e022f0c93e499eb72316d5f"
+python-versions = ">=3.9"
+content-hash = "98df458b99d015c58aba72ab669cae4c482e0afa1c0504d7ff2190096ad2162b"
