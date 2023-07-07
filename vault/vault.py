@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Mapping, Optional, Tuple, Union
 
 from . import config
-from .client import get_client, TokenClient, AppRoleClient
+from .client import AppRoleClient, TokenClient, get_client
 from .exceptions import VaultClientImproperlyConfiguredError
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,9 @@ def _validate_vault_config(
                 "Cannot authenticate with vault using approle."
             )
         return True
-    raise VaultClientImproperlyConfiguredError("Missing variable VAULT_AUTH_METHOD.")
+    raise VaultClientImproperlyConfiguredError(
+        "Missing variable VAULT_AUTH_METHOD."
+    )
 
 
 class Vault:
@@ -79,7 +81,9 @@ class Vault:
         return self._variables[key]
 
     @lru_cache
-    def _fetch_variables(self, engine_name: str, vault_path: str) -> Mapping[str, str]:
+    def _fetch_variables(
+        self, engine_name: str, vault_path: str
+    ) -> Mapping[str, str]:
         variables = self._client.read_secrets(engine_name, vault_path)
         logger.info(f"Fetched {len(variables.keys())} secret(s) from vault.")
         return variables
