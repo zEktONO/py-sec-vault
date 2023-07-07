@@ -17,7 +17,10 @@ def from_env_or_vault(
     :param vault: Vault object to use to fetch the value, if not provided a new Vault object is instantiated
     :return: value from environment or Vault
     """
-    return os.environ.get(key, (vault or Vault()).get(key, default or ""))
+    _var = os.environ.get(key, default=None)
+    if _var is not None:
+        return _var
+    return (vault or Vault()).get(key, default)
 
 
 def from_vault_or_env(
@@ -33,7 +36,13 @@ def from_vault_or_env(
     :param vault: Vault object to use to fetch the value, if not provided a new Vault object is instantiated
     :return: value from environment or Vault
     """
-    return (vault or Vault()).get(key, default=os.environ.get(key, default or ""))
+    _var = (vault or Vault()).get(key, default=None)
+    if _var is not None:
+        return _var
+
+    if default:
+        return os.environ.get(key, default)
+    return os.environ.get(key)
 
 
 def from_vault(

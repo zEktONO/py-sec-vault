@@ -84,7 +84,7 @@ class Vault:
         logger.info(f"Fetched {len(variables.keys())} secret(s) from vault.")
         return variables
 
-    def get(self, key: str, default: str = None) -> Optional[str]:
+    def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
         try:
             return self[key]
         except KeyError:
