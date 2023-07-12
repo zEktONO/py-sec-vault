@@ -43,7 +43,7 @@ jobs:
           pip install isort==5.11.4
       - run: |
           isort --profile black --check-only .      
-  isort2:
+  unit tests:
     runs-on: ubuntu-20.04
     needs: [isort, flake8, black, bandit]
     steps:
@@ -53,6 +53,7 @@ jobs:
           python-version: 3.11.4
       - run: |
           python -m pip install --upgrade pip
-          pip install isort==5.11.4
+          pip install pytest==7.4.0
+          pip install pytest-mock==3.11.1
       - run: |
-          isort --profile black --check-only .      
+          python -m pytest .      
