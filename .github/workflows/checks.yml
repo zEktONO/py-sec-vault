@@ -43,7 +43,7 @@ jobs:
           pip install isort==5.11.4
       - run: |
           isort --profile black --check-only .      
-  unit tests:
+  unit-tests:
     runs-on: ubuntu-20.04
     needs: [isort, flake8, black, bandit]
     steps:
